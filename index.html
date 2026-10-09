@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movies 365 | Movie Collection</title>
+<meta name="description" content="Explore movies, discover stories, and find films by language on Movies 365.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101116;color:#fff;font-family:Arial,sans-serif}
+header{background:#191a22;padding:20px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.logo{font-size:27px;font-weight:bold;color:#ffca28}
+.logo span{color:#fff}
+nav a{color:#ddd;text-decoration:none;margin:0 8px}
+.hero{padding:45px 5%;background:linear-gradient(120deg,#25243a,#111116)}
+.hero h1{font-size:36px;margin:0 0 12px}
+.hero p{color:#ccc}
+.search{width:100%;max-width:520px;padding:14px;border-radius:8px;border:1px solid #444;background:#22232c;color:#fff;font-size:16px}
+.categories{padding:20px 5%;display:flex;gap:10px;flex-wrap:wrap}
+.categories button{padding:10px 17px;border:0;border-radius:20px;background:#292a34;color:white;cursor:pointer}
+.categories button.active,.categories button:hover{background:#ffca28;color:#111}
+main{padding:10px 5% 40px}
+.section-title{font-size:23px;margin:15px 0 20px}
+.movies{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:20px}
+.card{background:#1c1d25;border-radius:10px;overflow:hidden}
+.poster{height:220px;background:#30313d;display:flex;align-items:center;justify-content:center;color:#aaa;text-align:center;padding:10px}
+.poster img{width:100%;height:100%;object-fit:cover}
+.info{padding:12px}
+.info h3{font-size:16px;margin:0 0 7px}
+.info p{font-size:13px;color:#bbb;margin:5px 0}
+.info a{display:block;text-align:center;margin-top:12px;padding:10px;background:#ffca28;color:#111;text-decoration:none;font-weight:bold;border-radius:5px}
+footer{text-align:center;padding:25px;background:#191a22;color:#aaa;font-size:13px}
+.empty{color:#bbb;padding:20px 0}
+@media(max-width:500px){.hero h1{font-size:29px}.movies{grid-template-columns:repeat(2,minmax(0,1fr))}.poster{height:190px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">MOVIES <span>365</span></div>
+  <nav><a href="#home">Home</a><a href="#collection">Movies</a></nav>
+</header>
+
+<section class="hero" id="home">
+  <h1>Discover Your Next Movie</h1>
+  <p>Explore movies and stories from different languages.</p>
+  <input id="search" class="search" type="search" placeholder="Search movies..." aria-label="Search movies">
+</section>
+
+<div class="categories" id="categories">
+  <button class="active" data-language="All">All</button>
+  <button data-language="Telugu">Telugu</button>
+  <button data-language="Tamil">Tamil</button>
+  <button data-language="Hindi">Hindi</button>
+  <button data-language="Malayalam">Malayalam</button>
+  <button data-language="Kannada">Kannada</button>
+  <button data-language="English">English</button>
+</div>
+
+<main id="collection">
+  <h2 class="section-title">Movie Collection</h2>
+  <div class="movies" id="movies"></div>
+  <p class="empty" id="empty" hidden>No movies found. Try another search.</p>
+</main>
+
+<footer>© <span id="year"></span> Movies 365. All rights reserved.</footer>
+
+<script>
+const movies = [
+  {
+    title: "My First Film",
+    language: "Telugu",
+    year: 2026,
+    poster: "",
+    download: ""
+  },
+  {
+    title: "Sample Movie",
+    language: "English",
+    year: 2026,
+    poster: "",
+    download: ""
+  }
+];
+
+let selectedLanguage = "All";
+const movieContainer = document.getElementById("movies");
+const searchInput = document.getElementById("search");
+const emptyMessage = document.getElementById("empty");
+
+function renderMovies() {
+  const query = searchInput.value.trim().toLowerCase();
+  const filtered = movies.filter(movie =>
+    (selectedLanguage === "All" || movie.language === selectedLanguage) &&
+    movie.title.toLowerCase().includes(query)
+  );
+
+  movieContainer.innerHTML = "";
+  emptyMessage.hidden = filtered.length !== 0;
+
+  filtered.forEach(movie => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const poster = document.createElement("div");
+    poster.className = "poster";
+
+    if (movie.poster) {
+      const image = document.createElement("img");
+      image.src = movie.poster;
+      image.alt = movie.title + " poster";
+      poster.appendChild(image);
+    } else {
+      poster.textContent = movie.title;
+    }
+
+    const info = document.createElement("div");
+    info.className = "info";
+
+    const title = document.createElement("h3");
+    title.textContent = movie.title;
+
+    const details = document.createElement("p");
+    details.textContent = movie.language + " • " + movie.year;
+
+    info.append(title, details);
+
+    if (movie.download) {
+      const link = document.createElement("a");
+      link.href = movie.download;
+      link.textContent = "Download";
+      link.target = "_blank";
+      link.rel = "noopener";
+      info.appendChild(link);
+    }
+
+    card.append(poster, info);
+    movieContainer.appendChild(card);
+  });
+}
+
+document.getElementById("categories").addEventListener("click", event => {
+  const button = event.target.closest("button[data-language]");
+  if (!button) return;
+
+  selectedLanguage = button.dataset.language;
+  document.querySelectorAll("#categories button").forEach(item =>
+    item.classList.toggle("active", item === button)
+  );
+  renderMovies();
+});
+
+searchInput.addEventListener("input", renderMovies);
+document.getElementById("year").textContent = new Date().getFullYear();
+renderMovies();
+</script>
+</body>
+</html>
