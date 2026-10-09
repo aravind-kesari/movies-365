@@ -1,5 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Movies 365 | Movie Collection</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #101116;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background: #191a22;
+  padding: 20px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 27px;
+  font-weight: bold;
+  color: #ffca28;
+}
+
+.logo span {
+  color: #fff;
+}
+
+nav a {
+  color: #ddd;
+  text-decoration: none;
+  margin: 0 8px;
+}
+
+.hero {
+  padding: 45px 5%;
+  background: linear-gradient(120deg, #25243a, #111116);
+}
+
+.hero h1 {
+  font-size: 36px;
+  margin: 0 0 12px;
+}
+
+.hero p {
+  color: #ccc;
+}
+
+.search {
+  width: 100%;
+  max-width: 520px;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #22232c;
+  color: #fff;
+  font-size: 16px;
+}
+
+.categories {
+  padding: 20px 5%;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.categories button {
+  padding: 10px 17px;
+  border: 0;
+  border-radius: 20px;
+  background: #292a34;
+  color: white;
+  cursor: pointer;
+}
+
+.categories button.active,
+.categories button:hover {
+  background: #ffca28;
+  color: #111;
+}
+
+main {
+  padding: 10px 5% 40px;
+}
+
+.section-title {
+  font-size: 23px;
+  margin: 15px 0 20px;
+}
+
+.movies {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #1c1d25;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.poster {
+  height: 220px;
+  background: #30313d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffca28;
+  text-align: center;
+  padding: 10px;
+  font-size: 48px;
+}
+
+.info {
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+
+.info h3 {
+  font-size: 16px;
+  margin: 0 0 7px;
+}
+
+.info p {
+  font-size: 13px;
+  color: #bbb;
+  margin: 5px 0;
+}
+
+.info a {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  padding: 10px;
+  background: #ffca28;
+  color: #111;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.info a:hover {
+  background: #ffe082;
+}
+
+.empty {
+  color: #bbb;
+  padding: 20px 0;
+}
+
+.status {
+  color: #ffca28;
+  padding: 15px 0;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  background: #191a22;
+  color: #aaa;
+  font-size: 13px;
+}
+
+@media (max-width: 500px) {
+  .hero h1 {
+    font-size: 29px;
+  }
+
+  .movies {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .poster {
+    height: 190px;
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+  <div class="logo">MOVIES <span>365</span></div>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#collection">Movies</a>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <h1>Discover Your Next Movie</h1>
+
+  <p>
+    Explore videos and stories from different languages.
+  </p>
+
+<input
+type="search"
+id="search"
+class="search"
+placeholder="Search videos..."
+aria-label="Search videos"
+
+>
+
+</section>
+
+<section class="categories" id="categories">
+  <button type="button" class="active" data-language="All">All</button>
+  <button type="button" data-language="Telugu">Telugu</button>
+  <button type="button" data-language="Tamil">Tamil</button>
+  <button type="button" data-language="Hindi">Hindi</button>
+  <button type="button" data-language="Malayalam">Malayalam</button>
+  <button type="button" data-language="Kannada">Kannada</button>
+  <button type="button" data-language="English">English</button>
+</section>
+
+<main id="collection">
+  <h2 class="section-title">Movie Collection</h2>
+
+  <p id="status" class="status">Connecting to Google Drive...</p>
+
+  <div id="movies" class="movies"></div>
+
+  <p id="empty" class="empty" hidden>
+    No videos found.
+  </p>
+</main>
+
+<footer>
+  © <span id="year"></span> Movies 365.
+  Only authorized videos are listed.
+</footer>
+
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzGwnAFDvwgMTEKhCDqNcDcvAVXDwnJs6OTrhcaMH1fulOGSKtk5hYT8Fa-LitBbCElzw/exec";
+"use strict";
+
+/*
+  Google Apps Script Web App URL
+*/
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbzGwnAFDvwgMTEKhCDqNcDcvAVXDwnJs6OTrhcaMH1fulOGSKtk5hYT8Fa-LitBbCElzw/exec";
 
 let movies = [];
 let selectedLanguage = "All";
@@ -7,6 +263,10 @@ let selectedLanguage = "All";
 const movieContainer = document.getElementById("movies");
 const searchInput = document.getElementById("search");
 const emptyMessage = document.getElementById("empty");
+const statusMessage = document.getElementById("status");
+
+document.getElementById("year").textContent =
+  new Date().getFullYear();
 
 function getLanguage(name) {
   const text = name.toLowerCase();
@@ -24,14 +284,20 @@ function getLanguage(name) {
 function renderMovies() {
   const query = searchInput.value.trim().toLowerCase();
 
-  const filtered = movies.filter(movie =>
-    (selectedLanguage === "All" ||
-     movie.language === selectedLanguage) &&
-    movie.title.toLowerCase().includes(query)
-  );
+  const filtered = movies.filter(movie => {
+    const matchesLanguage =
+      selectedLanguage === "All" ||
+      movie.language === selectedLanguage;
 
-  movieContainer.innerHTML = "";
-  emptyMessage.hidden = filtered.length !== 0;
+    const matchesSearch =
+      movie.title.toLowerCase().includes(query);
+
+    return matchesLanguage && matchesSearch;
+  });
+
+  movieContainer.replaceChildren();
+
+  emptyMessage.hidden = filtered.length > 0;
 
   filtered.forEach(movie => {
     const card = document.createElement("article");
@@ -51,8 +317,8 @@ function renderMovies() {
     details.textContent = movie.language;
 
     const link = document.createElement("a");
-    link.href = movie.download;
-    link.textContent = "Open Video";
+    link.href = movie.url;
+    link.textContent = "Open in Google Drive";
     link.target = "_blank";
     link.rel = "noopener noreferrer";
 
@@ -63,16 +329,76 @@ function renderMovies() {
 }
 
 async function loadMovies() {
-  movieContainer.textContent = "Loading videos...";
+  statusMessage.hidden = false;
+  statusMessage.textContent = "Loading videos from Google Drive...";
 
   try {
     const response = await fetch(API_URL);
 
     if (!response.ok) {
-      throw new Error("Could not load videos");
+      throw new Error("Server returned HTTP " + response.status);
     }
 
     const files = await response.json();
 
+    if (!Array.isArray(files)) {
+      throw new Error("Unexpected API response");
+    }
+
     movies = files
-      .filter(file => file.mimeType.start
+      .filter(file =>
+        file.mimeType &&
+        file.mimeType.startsWith("video/")
+      )
+      .map(file => ({
+        title: file.name.replace(/\.[^/.]+$/, ""),
+        language: getLanguage(file.name),
+        url:
+          "https://drive.google.com/file/d/" +
+          encodeURIComponent(file.id) +
+          "/view"
+      }));
+
+    statusMessage.hidden = true;
+    renderMovies();
+
+    if (movies.length === 0) {
+      emptyMessage.textContent =
+        "No video files found in the Google Drive folder.";
+      emptyMessage.hidden = false;
+    }
+  } catch (error) {
+    console.error("Movies 365 error:", error);
+
+    statusMessage.hidden = false;
+    statusMessage.textContent =
+      "Could not load videos. Please check the Google Drive connection.";
+
+    movieContainer.replaceChildren();
+    emptyMessage.hidden = true;
+  }
+}
+
+document.getElementById("categories").addEventListener("click", event => {
+  const button = event.target.closest("button[data-language]");
+
+  if (!button) return;
+
+  selectedLanguage = button.dataset.language;
+
+  document
+    .querySelectorAll("#categories button")
+    .forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+
+  renderMovies();
+});
+
+searchInput.addEventListener("input", renderMovies);
+
+loadMovies();
+</script>
+
+</body>
+</html>
