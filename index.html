@@ -425,8 +425,21 @@ function renderMovies() {
             }
         };
 
-        img.src = movie.posterUrl || driveThumbnail;
-        poster.appendChild(img);
+ ```javascript
+img.src = movie.posterUrl || driveThumbnail;
+
+img.alt = movie.title || "Movie Poster";
+img.style.width = "100%";
+img.style.height = "100%";
+img.style.objectFit = "cover";
+
+img.onerror = function () {
+  this.onerror = null;
+  this.src = driveThumbnail;
+};
+
+poster.appendChild(img);
+```
 
         const label = document.createElement("div");
         label.className = "poster-label";
