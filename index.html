@@ -5,9 +5,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080808">
-<meta name="description" content="Explore Movies 365. Browse your movie collection, search titles and discover movies by language.">
-<meta name="robots" content="index, follow">
-<title>Movies 365 | Movie Collection</title>
+
+<title>Movies 365 - Telugu &amp; Indian Movie Collection</title>
+
+<meta name="description" content="Welcome to Movies 365. Explore our movie collection, search titles, browse by language, and discover Telugu and Indian movies.">
+
+<meta name="robots" content="index, follow, max-image-preview:large">
+
+<link rel="canonical" href="https://aravind-kesari.github.io/movies-365/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Movies 365 - Telugu &amp; Indian Movie Collection">
+<meta property="og:description" content="Explore Movies 365, search movie titles, and browse our collection by language.">
+<meta property="og:url" content="https://aravind-kesari.github.io/movies-365/">
+<meta property="og:site_name" content="Movies 365">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Movies 365 - Telugu &amp; Indian Movie Collection">
+<meta name="twitter:description" content="Explore the Movies 365 collection and discover movies by language.">
 
 <style>
 :root {
@@ -255,6 +270,12 @@ main {
     font-weight: bold;
 }
 
+.empty-state {
+    color: var(--muted);
+    padding: 20px 0;
+    line-height: 1.7;
+}
+
 footer {
     margin-top: 35px;
     padding: 30px 15px;
@@ -263,6 +284,10 @@ footer {
     text-align: center;
     font-size: 13px;
     line-height: 1.8;
+}
+
+footer a {
+    color: var(--accent);
 }
 
 @media (max-width: 500px) {
@@ -303,7 +328,12 @@ footer {
 <body>
 
 <header>
-    <div class="logo">MOVIES <span>365</span></div>
+    <a href="https://aravind-kesari.github.io/movies-365/"
+       class="logo"
+       aria-label="Movies 365 Home"
+       style="text-decoration:none;">
+        MOVIES <span>365</span>
+    </a>
 
 ```
 <input
@@ -312,6 +342,7 @@ footer {
     type="search"
     placeholder="Search movies..."
     aria-label="Search movies"
+    autocomplete="off"
 >
 ```
 
@@ -320,10 +351,15 @@ footer {
 <section class="hero">
     <div class="hero-content">
         <div class="badge">WELCOME TO MOVIES 365</div>
-        <h1 id="heroTitle">Discover Your Next Favourite</h1>
-        <p>Explore your movie collection in one place. Search titles and browse by language.</p>
 
 ```
+    <h1 id="heroTitle">Movies 365 - Explore Movies by Language</h1>
+
+    <p>
+        Welcome to Movies 365. Explore our movie collection,
+        search titles, and discover available videos by language.
+    </p>
+
     <button class="primary-btn" id="exploreBtn" type="button">
         🎬 Explore Collection
     </button>
@@ -336,15 +372,15 @@ footer {
     <h2 class="section-title">Explore Movies</h2>
 
 ```
-<div class="filters">
-    <button class="filter-btn active" data-language="All">All</button>
-    <button class="filter-btn" data-language="Telugu">Telugu</button>
-    <button class="filter-btn" data-language="Tamil">Tamil</button>
-    <button class="filter-btn" data-language="Hindi">Hindi</button>
-    <button class="filter-btn" data-language="Malayalam">Malayalam</button>
-    <button class="filter-btn" data-language="Kannada">Kannada</button>
-    <button class="filter-btn" data-language="English">English</button>
-    <button class="filter-btn" data-language="Other">Other</button>
+<div class="filters" aria-label="Filter movies by language">
+    <button class="filter-btn active" data-language="All" type="button">All</button>
+    <button class="filter-btn" data-language="Telugu" type="button">Telugu</button>
+    <button class="filter-btn" data-language="Tamil" type="button">Tamil</button>
+    <button class="filter-btn" data-language="Hindi" type="button">Hindi</button>
+    <button class="filter-btn" data-language="Malayalam" type="button">Malayalam</button>
+    <button class="filter-btn" data-language="Kannada" type="button">Kannada</button>
+    <button class="filter-btn" data-language="English" type="button">English</button>
+    <button class="filter-btn" data-language="Other" type="button">Other</button>
 </div>
 
 <p id="status" class="status" role="status" aria-live="polite">
@@ -357,7 +393,8 @@ footer {
 </main>
 
 <footer>
-    <p>© <span id="year"></span> Movies 365 | Your Movie Collection</p>
+    <p>© <span id="year"></span> Movies 365 | Movie Collection</p>
+    <p>Explore our collection and search for titles by language.</p>
 </footer>
 
 <script>
@@ -368,7 +405,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzCMpd3eJeMRyIuplSiqLFS
 const grid = document.getElementById("movieGrid");
 const statusText = document.getElementById("status");
 const searchInput = document.getElementById("searchInput");
-const heroTitle = document.getElementById("heroTitle");
 
 let allMovies = [];
 let activeLanguage = "All";
@@ -376,7 +412,9 @@ let activeLanguage = "All";
 document.getElementById("year").textContent = new Date().getFullYear();
 
 document.getElementById("exploreBtn").addEventListener("click", function () {
-    document.getElementById("movies").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("movies").scrollIntoView({
+        behavior: "smooth"
+    });
 });
 
 function getLanguage(name) {
@@ -444,7 +482,9 @@ function createMovieCard(movie) {
     const label = document.createElement("div");
     label.className = "poster-label";
     label.textContent =
-        movie.language === "Other" ? "MOVIES 365" : movie.language.toUpperCase();
+        movie.language === "Other"
+            ? "MOVIES 365"
+            : movie.language.toUpperCase();
 
     poster.appendChild(label);
 
@@ -456,7 +496,8 @@ function createMovieCard(movie) {
 
     const language = document.createElement("div");
     language.className = "language";
-    language.textContent = movie.language === "Other" ? "Video" : movie.language;
+    language.textContent =
+        movie.language === "Other" ? "Video" : movie.language;
 
     if (movie.year) {
         language.textContent += " • " + movie.year;
@@ -464,23 +505,16 @@ function createMovieCard(movie) {
 
     const download = document.createElement("a");
     download.className = "download-btn";
-    download.textContent = "⬇ Download";
+    download.textContent = "⬇ Open Video";
     download.href =
-        "https://drive.google.com/uc?export=download&id=" +
-        encodeURIComponent(movie.id);
+        "https://drive.google.com/file/d/" +
+        encodeURIComponent(movie.id) + "/view";
     download.target = "_blank";
     download.rel = "noopener noreferrer";
-    download.setAttribute("aria-label", "Open download for " + (movie.title || movie.name));
-
-    /*
-      Google Drive may show a confirmation page for large files.
-      If direct download is blocked, the button falls back to the Drive file page.
-    */
-    download.addEventListener("click", function () {
-        download.href =
-            "https://drive.google.com/file/d/" +
-            encodeURIComponent(movie.id) + "/view";
-    });
+    download.setAttribute(
+        "aria-label",
+        "Open video for " + (movie.title || movie.name)
+    );
 
     info.appendChild(title);
     info.appendChild(language);
@@ -496,27 +530,34 @@ function renderMovies() {
     const query = searchInput.value.toLowerCase().trim();
 
     const filtered = allMovies.filter(function (movie) {
-        const searchableText =
-            (movie.name + " " + movie.title + " " + movie.year).toLowerCase();
+        const searchableText = (
+            movie.name + " " +
+            movie.title + " " +
+            movie.year + " " +
+            movie.language
+        ).toLowerCase();
 
         const matchesSearch = searchableText.includes(query);
+
         const matchesLanguage =
-            activeLanguage === "All" || movie.language === activeLanguage;
+            activeLanguage === "All" ||
+            movie.language === activeLanguage;
 
         return matchesSearch && matchesLanguage;
     });
 
-    grid.innerHTML = "";
+    grid.replaceChildren();
 
     if (filtered.length === 0) {
         statusText.textContent = allMovies.length
-            ? "No matching movies found."
+            ? "No matching movies found. Try another title or language."
             : "No videos found in your collection.";
 
         return;
     }
 
-    statusText.textContent = filtered.length + " video(s) in your collection";
+    statusText.textContent =
+        filtered.length + " video(s) in your collection";
 
     const fragment = document.createDocumentFragment();
 
@@ -525,16 +566,15 @@ function renderMovies() {
     });
 
     grid.appendChild(fragment);
-
-    heroTitle.textContent =
-        filtered[0].title || cleanTitle(filtered[0].name);
 }
 
 async function loadMovies() {
     statusText.textContent = "Loading your collection...";
 
     try {
-        const response = await fetch(API_URL, { cache: "no-store" });
+        const response = await fetch(API_URL, {
+            cache: "no-store"
+        });
 
         if (!response.ok) {
             throw new Error("Server returned HTTP " + response.status);
@@ -543,7 +583,9 @@ async function loadMovies() {
         const data = await response.json();
 
         if (data && data.success === false) {
-            throw new Error(data.error || "The movie service returned an error.");
+            throw new Error(
+                data.error || "The movie service returned an error."
+            );
         }
 
         const files = Array.isArray(data)
@@ -560,6 +602,7 @@ async function loadMovies() {
             })
             .filter(function (file) {
                 const mime = file.mimeType || "";
+
                 return mime.startsWith("video/") ||
                     /\.(mp4|mkv|mov|webm|avi|m4v)$/i.test(file.name);
             })
@@ -594,6 +637,7 @@ document.querySelectorAll(".filter-btn").forEach(function (button) {
 
         button.classList.add("active");
         activeLanguage = button.dataset.language;
+
         renderMovies();
     });
 });
