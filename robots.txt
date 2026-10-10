@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aravind-kesari.github.io/movies-365/sitemap.xml
