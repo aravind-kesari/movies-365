@@ -1,44 +1,58 @@
-```html
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080808">
-<meta name="description" content="Explore the Movies 365 collection. Search movies and browse by language.">
-<title>Movies 365 | Watch & Explore</title>
+<meta name="description" content="Explore Movies 365. Browse your movie collection, search titles and discover movies by language.">
+<meta name="robots" content="index, follow">
+<title>Movies 365 | Movie Collection</title>
 
 <style>
+:root {
+    --bg: #080808;
+    --card: #151515;
+    --accent: #f5c518;
+    --text: #ffffff;
+    --muted: #aaaaaa;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    background: #080808;
-    color: #fff;
-    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
 }
 
 header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 5%;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 17px 5%;
     background: #101010;
+    border-bottom: 1px solid #262626;
     position: sticky;
     top: 0;
     z-index: 10;
-    gap: 18px;
-    flex-wrap: wrap;
-    border-bottom: 1px solid #222;
 }
 
 .logo {
     font-size: 28px;
-    font-weight: bold;
-    color: #f5c518;
+    font-weight: 900;
+    color: var(--accent);
     white-space: nowrap;
 }
 
@@ -47,49 +61,51 @@ header {
 }
 
 .search-box {
-    padding: 12px 16px;
-    width: min(360px, 100%);
+    width: min(380px, 100%);
+    padding: 12px 15px;
     border: 1px solid #444;
-    border-radius: 6px;
+    border-radius: 7px;
     background: #1c1c1c;
     color: white;
+    font-size: 15px;
     outline: none;
 }
 
 .search-box:focus {
-    border-color: #f5c518;
+    border-color: var(--accent);
 }
 
 .hero {
-    min-height: 320px;
-    padding: 60px 6%;
+    min-height: 330px;
+    padding: 55px 6%;
     display: flex;
     align-items: center;
     background:
-      linear-gradient(90deg, #080808 5%, rgba(8,8,8,.85) 45%, rgba(8,8,8,.25)),
-      linear-gradient(0deg, #080808, transparent 60%),
-      radial-gradient(ellipse at 75% 35%, #6b1919, #241010 40%, #080808 75%);
+        linear-gradient(90deg, #080808 5%, rgba(8,8,8,.82) 55%, rgba(8,8,8,.2)),
+        linear-gradient(0deg, #080808, transparent 65%),
+        radial-gradient(ellipse at 75% 35%, #671818, #241010 45%, #080808 80%);
 }
 
 .hero-content {
-    max-width: 650px;
+    max-width: 680px;
 }
 
 .badge {
     display: inline-block;
-    background: #f5c518;
+    padding: 7px 11px;
+    margin-bottom: 16px;
+    background: var(--accent);
     color: #111;
-    padding: 6px 10px;
-    font-weight: bold;
-    border-radius: 3px;
+    border-radius: 4px;
     font-size: 12px;
-    margin-bottom: 15px;
+    font-weight: bold;
 }
 
 .hero h1 {
     font-size: clamp(34px, 6vw, 58px);
-    margin-bottom: 15px;
+    line-height: 1.12;
     overflow-wrap: anywhere;
+    margin-bottom: 15px;
 }
 
 .hero p {
@@ -98,47 +114,60 @@ header {
     margin-bottom: 22px;
 }
 
-.hero button {
-    background: #f5c518;
-    color: #111;
-    padding: 13px 22px;
-    border: none;
+.primary-btn {
+    display: inline-block;
+    padding: 13px 20px;
+    border: 0;
     border-radius: 5px;
+    background: var(--accent);
+    color: #111;
     font-weight: bold;
     cursor: pointer;
+    text-decoration: none;
+}
+
+.primary-btn:hover,
+.download-btn:hover {
+    background: #ffdc50;
 }
 
 main {
     padding: 25px 5%;
-    min-height: 300px;
+    min-height: 350px;
 }
 
 .section-title {
-    font-size: 24px;
+    font-size: 25px;
     margin: 15px 0 20px;
 }
 
 .filters {
     display: flex;
-    gap: 10px;
+    gap: 9px;
     flex-wrap: wrap;
-    margin-bottom: 25px;
+    margin-bottom: 22px;
 }
 
 .filter-btn {
+    padding: 9px 15px;
+    border: 1px solid #444;
+    border-radius: 22px;
     background: #202020;
     color: white;
-    border: 1px solid #444;
-    padding: 9px 16px;
-    border-radius: 20px;
     cursor: pointer;
 }
 
 .filter-btn.active,
 .filter-btn:hover {
-    background: #f5c518;
+    background: var(--accent);
     color: #111;
-    border-color: #f5c518;
+    border-color: var(--accent);
+}
+
+.status {
+    color: var(--muted);
+    padding: 18px 0;
+    line-height: 1.7;
 }
 
 .movie-grid {
@@ -149,15 +178,15 @@ main {
 
 .movie-card {
     min-width: 0;
-    background: #151515;
-    border-radius: 8px;
     overflow: hidden;
+    border-radius: 8px;
+    background: var(--card);
     transition: transform .2s, box-shadow .2s;
 }
 
 .movie-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px #000;
+    box-shadow: 0 8px 25px rgba(0,0,0,.7);
 }
 
 .poster {
@@ -166,16 +195,16 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(145deg, #451515, #171717 70%);
     overflow: hidden;
+    background: linear-gradient(145deg, #451515, #171717 70%);
 }
 
 .poster img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     position: absolute;
     inset: 0;
+    object-fit: cover;
 }
 
 .poster-icon {
@@ -188,11 +217,11 @@ main {
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 2;
     padding: 28px 8px 10px;
     background: linear-gradient(transparent, rgba(0,0,0,.9));
     font-size: 11px;
     font-weight: bold;
-    z-index: 2;
 }
 
 .movie-info {
@@ -207,51 +236,42 @@ main {
 }
 
 .language {
-    display: inline-block;
-    color: #f5c518;
+    display: block;
+    color: var(--accent);
     font-size: 11px;
     margin-bottom: 12px;
 }
 
-.watch-btn {
+.download-btn {
     display: block;
+    width: 100%;
+    padding: 11px 5px;
+    border-radius: 5px;
+    background: var(--accent);
+    color: #111;
     text-align: center;
     text-decoration: none;
-    background: #f5c518;
-    color: #111;
-    padding: 10px 5px;
-    border-radius: 4px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: bold;
 }
 
-.watch-btn:hover,
-.hero button:hover {
-    background: #ffdb4d;
-}
-
-.status {
-    color: #bbb;
-    padding: 20px 0;
-    line-height: 1.7;
-}
-
 footer {
-    text-align: center;
-    color: #888;
-    padding: 35px 15px;
     margin-top: 35px;
+    padding: 30px 15px;
     border-top: 1px solid #222;
+    color: #888;
+    text-align: center;
     font-size: 13px;
+    line-height: 1.8;
 }
 
 @media (max-width: 500px) {
     header {
-        padding: 16px 4%;
+        padding: 15px 4%;
     }
 
     .logo {
-        font-size: 23px;
+        font-size: 24px;
     }
 
     .search-box {
@@ -277,6 +297,7 @@ footer {
     }
 }
 </style>
+
 </head>
 
 <body>
@@ -284,44 +305,55 @@ footer {
 <header>
     <div class="logo">MOVIES <span>365</span></div>
 
-    <input
-        id="searchInput"
-        class="search-box"
-        type="search"
-        placeholder="Search movies..."
-        aria-label="Search movies"
-    >
+```
+<input
+    id="searchInput"
+    class="search-box"
+    type="search"
+    placeholder="Search movies..."
+    aria-label="Search movies"
+>
+```
+
 </header>
 
 <section class="hero">
     <div class="hero-content">
         <div class="badge">WELCOME TO MOVIES 365</div>
         <h1 id="heroTitle">Discover Your Next Favourite</h1>
-        <p>
-            Explore your movie collection in one place.
-            Search titles and browse by language.
-        </p>
-        <button onclick="document.getElementById('movies').scrollIntoView({behavior:'smooth'})">
-            🎬 Explore Collection
-        </button>
-    </div>
+        <p>Explore your movie collection in one place. Search titles and browse by language.</p>
+
+```
+    <button class="primary-btn" id="exploreBtn" type="button">
+        🎬 Explore Collection
+    </button>
+</div>
+```
+
 </section>
 
 <main id="movies">
     <h2 class="section-title">Explore Movies</h2>
 
-    <div class="filters">
-        <button class="filter-btn active" data-language="All">All</button>
-        <button class="filter-btn" data-language="Telugu">Telugu</button>
-        <button class="filter-btn" data-language="Tamil">Tamil</button>
-        <button class="filter-btn" data-language="Hindi">Hindi</button>
-        <button class="filter-btn" data-language="Malayalam">Malayalam</button>
-        <button class="filter-btn" data-language="Kannada">Kannada</button>
-        <button class="filter-btn" data-language="English">English</button>
-    </div>
+```
+<div class="filters">
+    <button class="filter-btn active" data-language="All">All</button>
+    <button class="filter-btn" data-language="Telugu">Telugu</button>
+    <button class="filter-btn" data-language="Tamil">Tamil</button>
+    <button class="filter-btn" data-language="Hindi">Hindi</button>
+    <button class="filter-btn" data-language="Malayalam">Malayalam</button>
+    <button class="filter-btn" data-language="Kannada">Kannada</button>
+    <button class="filter-btn" data-language="English">English</button>
+    <button class="filter-btn" data-language="Other">Other</button>
+</div>
 
-    <p id="status" class="status" role="status">Loading your collection...</p>
-    <div id="movieGrid" class="movie-grid"></div>
+<p id="status" class="status" role="status" aria-live="polite">
+    Loading your collection...
+</p>
+
+<div id="movieGrid" class="movie-grid"></div>
+```
+
 </main>
 
 <footer>
@@ -329,19 +361,26 @@ footer {
 </footer>
 
 <script>
+"use strict";
+
 const API_URL = "https://script.google.com/macros/s/AKfycbzCMpd3eJeMRyIuplSiqLFS1g69_sWwMHm3z11QsqAJIQ2I37wlkGTW3n-ZeAKzAKba0g/exec";
 
 const grid = document.getElementById("movieGrid");
 const statusText = document.getElementById("status");
 const searchInput = document.getElementById("searchInput");
+const heroTitle = document.getElementById("heroTitle");
 
 let allMovies = [];
 let activeLanguage = "All";
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
+document.getElementById("exploreBtn").addEventListener("click", function () {
+    document.getElementById("movies").scrollIntoView({ behavior: "smooth" });
+});
+
 function getLanguage(name) {
-    const text = name.toLowerCase();
+    const text = String(name || "").toLowerCase();
 
     if (/\b(telugu|tlg)\b/.test(text)) return "Telugu";
     if (/\b(tamil|tam)\b/.test(text)) return "Tamil";
@@ -354,7 +393,7 @@ function getLanguage(name) {
 }
 
 function cleanTitle(name) {
-    return name
+    return String(name || "")
         .replace(/\.[^/.]+$/, "")
         .replace(/[._]+/g, " ")
         .replace(/\b(480p|720p|1080p|2160p|4k|8k|web.?dl|webrip|bluray|hdrip|x264|x265|hevc|h264|h265)\b/gi, " ")
@@ -362,15 +401,107 @@ function cleanTitle(name) {
         .trim();
 }
 
+function createMovieCard(movie) {
+    const card = document.createElement("article");
+    card.className = "movie-card";
+
+    const poster = document.createElement("div");
+    poster.className = "poster";
+
+    const icon = document.createElement("div");
+    icon.className = "poster-icon";
+    icon.textContent = "🎬";
+    poster.appendChild(icon);
+
+    const img = document.createElement("img");
+    img.alt = (movie.title || "Movie") + " poster";
+    img.loading = "lazy";
+    img.referrerPolicy = "no-referrer";
+
+    const driveThumbnail =
+        "https://drive.google.com/thumbnail?id=" +
+        encodeURIComponent(movie.id) + "&sz=w500";
+
+    img.onload = function () {
+        if (img.naturalWidth > 0) {
+            icon.style.display = "none";
+        }
+    };
+
+    img.onerror = function () {
+        if (!img.dataset.fallback && img.src !== driveThumbnail) {
+            img.dataset.fallback = "used";
+            img.src = driveThumbnail;
+        } else {
+            img.remove();
+            icon.style.display = "block";
+        }
+    };
+
+    img.src = movie.posterUrl || driveThumbnail;
+    poster.appendChild(img);
+
+    const label = document.createElement("div");
+    label.className = "poster-label";
+    label.textContent =
+        movie.language === "Other" ? "MOVIES 365" : movie.language.toUpperCase();
+
+    poster.appendChild(label);
+
+    const info = document.createElement("div");
+    info.className = "movie-info";
+
+    const title = document.createElement("h3");
+    title.textContent = movie.title || cleanTitle(movie.name);
+
+    const language = document.createElement("div");
+    language.className = "language";
+    language.textContent = movie.language === "Other" ? "Video" : movie.language;
+
+    if (movie.year) {
+        language.textContent += " • " + movie.year;
+    }
+
+    const download = document.createElement("a");
+    download.className = "download-btn";
+    download.textContent = "⬇ Download";
+    download.href =
+        "https://drive.google.com/uc?export=download&id=" +
+        encodeURIComponent(movie.id);
+    download.target = "_blank";
+    download.rel = "noopener noreferrer";
+    download.setAttribute("aria-label", "Open download for " + (movie.title || movie.name));
+
+    /*
+      Google Drive may show a confirmation page for large files.
+      If direct download is blocked, the button falls back to the Drive file page.
+    */
+    download.addEventListener("click", function () {
+        download.href =
+            "https://drive.google.com/file/d/" +
+            encodeURIComponent(movie.id) + "/view";
+    });
+
+    info.appendChild(title);
+    info.appendChild(language);
+    info.appendChild(download);
+
+    card.appendChild(poster);
+    card.appendChild(info);
+
+    return card;
+}
+
 function renderMovies() {
     const query = searchInput.value.toLowerCase().trim();
 
-    const filtered = allMovies.filter(movie => {
-        const searchableText = `${movie.name} ${movie.title} ${movie.year}`.toLowerCase();
+    const filtered = allMovies.filter(function (movie) {
+        const searchableText =
+            (movie.name + " " + movie.title + " " + movie.year).toLowerCase();
+
         const matchesSearch = searchableText.includes(query);
         const matchesLanguage =
-            activeLanguage === "All" ||
-            movie.language === activeLanguage;
+            activeLanguage === "All" || movie.language === activeLanguage;
 
         return matchesSearch && matchesLanguage;
     });
@@ -385,97 +516,17 @@ function renderMovies() {
         return;
     }
 
-    statusText.textContent = `${filtered.length} video(s) in your collection`;
+    statusText.textContent = filtered.length + " video(s) in your collection";
 
-   ```javascript
-filtered.forEach(movie => {
-    const card = document.createElement("article");
-    card.className = "movie-card";
+    const fragment = document.createDocumentFragment();
 
-    const poster = document.createElement("div");
-    poster.className = "poster";
-
-    const icon = document.createElement("div");
-    icon.className = "poster-icon";
-    icon.textContent = "🎬";
-    poster.appendChild(icon);
-
-    const img = document.createElement("img");
-    img.alt = `${movie.title || "Movie"} poster`;
-    img.loading = "lazy";
-    img.referrerPolicy = "no-referrer";
-
-    const driveThumbnail =
-        `https://drive.google.com/thumbnail?id=${encodeURIComponent(movie.id)}&sz=w500`;
-
-    img.onerror = function () {
-        if (this.dataset.fallback !== "used" &&
-            this.src !== driveThumbnail) {
-            this.dataset.fallback = "used";
-            this.src = driveThumbnail;
-        } else {
-            this.remove();
-            icon.style.display = "block";
-        }
-    };
-
-    img.onload = function () {
-        if (this.naturalWidth > 0) {
-            icon.style.display = "none";
-        }
-    };
-
-    img.src = movie.posterUrl || driveThumbnail;
-    img.style.width = "100%";
-    img.style.height = "100%";
-    img.style.objectFit = "cover";
-
-    poster.appendChild(img);
-```
-
-```
-
-        const label = document.createElement("div");
-        label.className = "poster-label";
-        label.textContent = movie.language === "Other"
-            ? "MOVIES 365"
-            : movie.language.toUpperCase();
-
-        poster.appendChild(label);
-
-        const info = document.createElement("div");
-        info.className = "movie-info";
-
-        const title = document.createElement("h3");
-        title.textContent = movie.title || cleanTitle(movie.name);
-
-        const language = document.createElement("div");
-        language.className = "language";
-        language.textContent = movie.language === "Other"
-            ? "Video"
-            : movie.language;
-
-        if (movie.year) {
-            language.textContent += ` • ${movie.year}`;
-        }
-
-        const link = document.createElement("a");
-        link.className = "watch-btn";
-        link.textContent = "▶ Open Video";
-        link.href = `https://drive.google.com/file/d/${encodeURIComponent(movie.id)}/view`;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-
-        info.appendChild(title);
-        info.appendChild(language);
-        info.appendChild(link);
-
-        card.appendChild(poster);
-        card.appendChild(info);
-        grid.appendChild(card);
+    filtered.forEach(function (movie) {
+        fragment.appendChild(createMovieCard(movie));
     });
 
-    document.getElementById("heroTitle").textContent =
+    grid.appendChild(fragment);
+
+    heroTitle.textContent =
         filtered[0].title || cleanTitle(filtered[0].name);
 }
 
@@ -486,12 +537,12 @@ async function loadMovies() {
         const response = await fetch(API_URL, { cache: "no-store" });
 
         if (!response.ok) {
-            throw new Error("Could not connect to the movie collection.");
+            throw new Error("Server returned HTTP " + response.status);
         }
 
         const data = await response.json();
 
-        if (data.success === false) {
+        if (data && data.success === false) {
             throw new Error(data.error || "The movie service returned an error.");
         }
 
@@ -499,21 +550,29 @@ async function loadMovies() {
             ? data
             : (data.files || data.movies || []);
 
+        if (!Array.isArray(files)) {
+            throw new Error("Unexpected response format from movie service.");
+        }
+
         allMovies = files
-            .filter(file => file.id && file.name)
-            .filter(file => {
+            .filter(function (file) {
+                return file && file.id && file.name;
+            })
+            .filter(function (file) {
                 const mime = file.mimeType || "";
                 return mime.startsWith("video/") ||
-                       /\.(mp4|mkv|mov|webm|avi|m4v)$/i.test(file.name);
+                    /\.(mp4|mkv|mov|webm|avi|m4v)$/i.test(file.name);
             })
-            .map(file => ({
-                id: file.id,
-                name: file.name,
-                title: file.title || cleanTitle(file.name),
-                year: file.year || "",
-                posterUrl: file.posterUrl || "",
-                language: getLanguage(file.name)
-            }));
+            .map(function (file) {
+                return {
+                    id: file.id,
+                    name: file.name,
+                    title: file.title || cleanTitle(file.name),
+                    year: file.year || "",
+                    posterUrl: file.posterUrl || "",
+                    language: getLanguage(file.name)
+                };
+            });
 
         renderMovies();
 
@@ -527,9 +586,9 @@ async function loadMovies() {
 
 searchInput.addEventListener("input", renderMovies);
 
-document.querySelectorAll(".filter-btn").forEach(button => {
-    button.addEventListener("click", () => {
-        document.querySelectorAll(".filter-btn").forEach(btn => {
+document.querySelectorAll(".filter-btn").forEach(function (button) {
+    button.addEventListener("click", function () {
+        document.querySelectorAll(".filter-btn").forEach(function (btn) {
             btn.classList.remove("active");
         });
 
@@ -544,4 +603,3 @@ loadMovies();
 
 </body>
 </html>
-```
