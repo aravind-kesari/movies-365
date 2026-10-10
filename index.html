@@ -387,67 +387,52 @@ function renderMovies() {
 
     statusText.textContent = `${filtered.length} video(s) in your collection`;
 
-    filtered.forEach(movie => {
-        const card = document.createElement("article");
-        card.className = "movie-card";
+   ```javascript
+filtered.forEach(movie => {
+    const card = document.createElement("article");
+    card.className = "movie-card";
 
-        const poster = document.createElement("div");
-        poster.className = "poster";
+    const poster = document.createElement("div");
+    poster.className = "poster";
 
-        const icon = document.createElement("div");
-        icon.className = "poster-icon";
-        icon.textContent = "🎬";
-        poster.appendChild(icon);
+    const icon = document.createElement("div");
+    icon.className = "poster-icon";
+    icon.textContent = "🎬";
+    poster.appendChild(icon);
 
-        const img = document.createElement("img");
-        img.alt = `${movie.title} poster`;
-        img.loading = "lazy";
-        img.referrerPolicy = "no-referrer";
+    const img = document.createElement("img");
+    img.alt = `${movie.title || "Movie"} poster`;
+    img.loading = "lazy";
+    img.referrerPolicy = "no-referrer";
 
-        // Use the movie poster returned by Apps Script/OMDb first.
-        // If unavailable, try the Google Drive thumbnail.
-        const driveThumbnail =
-            `https://drive.google.com/thumbnail?id=${encodeURIComponent(movie.id)}&sz=w500`;
+    const driveThumbnail =
+        `https://drive.google.com/thumbnail?id=${encodeURIComponent(movie.id)}&sz=w500`;
 
-        img.onerror = function () {
-            if (this.dataset.fallback !== "used" &&
-                this.src !== driveThumbnail) {
-                this.dataset.fallback = "used";
-                this.src = driveThumbnail;
-            } else {
-                this.remove();
-            }
-        };
+    img.onerror = function () {
+        if (this.dataset.fallback !== "used" &&
+            this.src !== driveThumbnail) {
+            this.dataset.fallback = "used";
+            this.src = driveThumbnail;
+        } else {
+            this.remove();
+            icon.style.display = "block";
+        }
+    };
 
-        img.onload = function () {
-            if (this.naturalWidth > 0) {
-                icon.style.display = "none";
-            }
-        };
-
-        img.src = movie.posterUrl || driveThumbnail;
-
-        img.alt = `${movie.title || "Movie"} poster`;
-        img.style.width = "100%";
-        img.style.height = "100%";
-        img.style.objectFit = "cover";
-
-        img.onerror = function () {
-            this.onerror = null;
-
-            if (this.src !== driveThumbnail) {
-                this.src = driveThumbnail;
-            } else {
-                this.remove();
-                icon.style.display = "block";
-            }
-        };
-
-        img.onload = function () {
+    img.onload = function () {
+        if (this.naturalWidth > 0) {
             icon.style.display = "none";
-        };
+        }
+    };
 
-        poster.appendChild(img);
+    img.src = movie.posterUrl || driveThumbnail;
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+
+    poster.appendChild(img);
+```
+
 ```
 
         const label = document.createElement("div");
