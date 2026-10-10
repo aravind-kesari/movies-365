@@ -1,9 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="theme-color" content="#080808">
+<meta name="description" content="Explore the Movies 365 collection. Search movies and browse by language.">
 <title>Movies 365 | Watch & Explore</title>
 
 <style>
@@ -15,7 +17,7 @@
 
 body {
     background: #080808;
-    color: white;
+    color: #fff;
     font-family: Arial, sans-serif;
 }
 
@@ -23,19 +25,21 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 5%;
-    background: linear-gradient(#111, #080808);
+    padding: 18px 5%;
+    background: #101010;
     position: sticky;
     top: 0;
     z-index: 10;
-    gap: 20px;
+    gap: 18px;
     flex-wrap: wrap;
+    border-bottom: 1px solid #222;
 }
 
 .logo {
     font-size: 28px;
     font-weight: bold;
     color: #f5c518;
+    white-space: nowrap;
 }
 
 .logo span {
@@ -44,7 +48,7 @@ header {
 
 .search-box {
     padding: 12px 16px;
-    width: min(320px, 100%);
+    width: min(360px, 100%);
     border: 1px solid #444;
     border-radius: 6px;
     background: #1c1c1c;
@@ -52,9 +56,13 @@ header {
     outline: none;
 }
 
+.search-box:focus {
+    border-color: #f5c518;
+}
+
 .hero {
     min-height: 320px;
-    padding: 65px 6%;
+    padding: 60px 6%;
     display: flex;
     align-items: center;
     background:
@@ -79,8 +87,9 @@ header {
 }
 
 .hero h1 {
-    font-size: clamp(36px, 6vw, 58px);
+    font-size: clamp(34px, 6vw, 58px);
     margin-bottom: 15px;
+    overflow-wrap: anywhere;
 }
 
 .hero p {
@@ -101,6 +110,7 @@ header {
 
 main {
     padding: 25px 5%;
+    min-height: 300px;
 }
 
 .section-title {
@@ -146,12 +156,12 @@ main {
 }
 
 .movie-card:hover {
-    transform: scale(1.04);
+    transform: translateY(-4px);
     box-shadow: 0 8px 25px #000;
 }
 
 .poster {
-    height: 225px;
+    height: 235px;
     position: relative;
     display: flex;
     align-items: center;
@@ -180,8 +190,9 @@ main {
     right: 0;
     padding: 28px 8px 10px;
     background: linear-gradient(transparent, rgba(0,0,0,.9));
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
+    z-index: 2;
 }
 
 .movie-info {
@@ -212,6 +223,11 @@ main {
     border-radius: 4px;
     font-size: 12px;
     font-weight: bold;
+}
+
+.watch-btn:hover,
+.hero button:hover {
+    background: #ffdb4d;
 }
 
 .status {
@@ -304,7 +320,7 @@ footer {
         <button class="filter-btn" data-language="English">English</button>
     </div>
 
-    <p id="status" class="status">Loading your collection...</p>
+    <p id="status" class="status" role="status">Loading your collection...</p>
     <div id="movieGrid" class="movie-grid"></div>
 </main>
 
@@ -327,7 +343,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
 function getLanguage(name) {
     const text = name.toLowerCase();
 
-    if (/\b(telugu|te|tlg)\b/.test(text)) return "Telugu";
+    if (/\b(telugu|tlg)\b/.test(text)) return "Telugu";
     if (/\b(tamil|tam)\b/.test(text)) return "Tamil";
     if (/\b(hindi|hin)\b/.test(text)) return "Hindi";
     if (/\b(malayalam|mal)\b/.test(text)) return "Malayalam";
@@ -341,6 +357,7 @@ function cleanTitle(name) {
     return name
         .replace(/\.[^/.]+$/, "")
         .replace(/[._]+/g, " ")
+        .replace(/\b(480p|720p|1080p|2160p|4k|8k|web.?dl|webrip|bluray|hdrip|x264|x265|hevc|h264|h265)\b/gi, " ")
         .replace(/\s+/g, " ")
         .trim();
 }
@@ -349,7 +366,8 @@ function renderMovies() {
     const query = searchInput.value.toLowerCase().trim();
 
     const filtered = allMovies.filter(movie => {
-        const matchesSearch = movie.name.toLowerCase().includes(query);
+        const searchableText = `${movie.name} ${movie.title} ${movie.year}`.toLowerCase();
+        const matchesSearch = searchableText.includes(query);
         const matchesLanguage =
             activeLanguage === "All" ||
             movie.language === activeLanguage;
@@ -381,23 +399,33 @@ function renderMovies() {
         icon.textContent = "🎬";
         poster.appendChild(icon);
 
-        // Google Drive thumbnail may not be available for every video.
         const img = document.createElement("img");
-        img.alt = cleanTitle(movie.name);
+        img.alt = `${movie.title} poster`;
         img.loading = "lazy";
-        img.src = movie.posterUrl ||
-    `https://drive.google.com/thumbnail?id=${encodeURIComponent(movie.id)}&sz=w500`;
+        img.referrerPolicy = "no-referrer";
 
-        img.onload = () => {
-            if (img.naturalWidth > 0) {
+        // Use the movie poster returned by Apps Script/OMDb first.
+        // If unavailable, try the Google Drive thumbnail.
+        const driveThumbnail =
+            `https://drive.google.com/thumbnail?id=${encodeURIComponent(movie.id)}&sz=w500`;
+
+        img.onerror = function () {
+            if (this.dataset.fallback !== "used" &&
+                this.src !== driveThumbnail) {
+                this.dataset.fallback = "used";
+                this.src = driveThumbnail;
+            } else {
+                this.remove();
+            }
+        };
+
+        img.onload = function () {
+            if (this.naturalWidth > 0) {
                 icon.style.display = "none";
             }
         };
 
-        img.onerror = () => {
-            img.remove();
-        };
-
+        img.src = movie.posterUrl || driveThumbnail;
         poster.appendChild(img);
 
         const label = document.createElement("div");
@@ -412,13 +440,17 @@ function renderMovies() {
         info.className = "movie-info";
 
         const title = document.createElement("h3");
-        title.textContent = cleanTitle(movie.name);
+        title.textContent = movie.title || cleanTitle(movie.name);
 
         const language = document.createElement("div");
         language.className = "language";
         language.textContent = movie.language === "Other"
             ? "Video"
             : movie.language;
+
+        if (movie.year) {
+            language.textContent += ` • ${movie.year}`;
+        }
 
         const link = document.createElement("a");
         link.className = "watch-btn";
@@ -436,23 +468,25 @@ function renderMovies() {
         grid.appendChild(card);
     });
 
-    if (filtered.length > 0) {
-        document.getElementById("heroTitle").textContent =
-            cleanTitle(filtered[0].name);
-    }
+    document.getElementById("heroTitle").textContent =
+        filtered[0].title || cleanTitle(filtered[0].name);
 }
 
 async function loadMovies() {
     statusText.textContent = "Loading your collection...";
 
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, { cache: "no-store" });
 
         if (!response.ok) {
             throw new Error("Could not connect to the movie collection.");
         }
 
         const data = await response.json();
+
+        if (data.success === false) {
+            throw new Error(data.error || "The movie service returned an error.");
+        }
 
         const files = Array.isArray(data)
             ? data
@@ -468,6 +502,9 @@ async function loadMovies() {
             .map(file => ({
                 id: file.id,
                 name: file.name,
+                title: file.title || cleanTitle(file.name),
+                year: file.year || "",
+                posterUrl: file.posterUrl || "",
                 language: getLanguage(file.name)
             }));
 
@@ -477,7 +514,7 @@ async function loadMovies() {
         statusText.textContent =
             "Could not load videos. Please refresh the page and try again.";
 
-        console.error(error);
+        console.error("Movies 365 loading error:", error);
     }
 }
 
@@ -500,3 +537,4 @@ loadMovies();
 
 </body>
 </html>
+```
