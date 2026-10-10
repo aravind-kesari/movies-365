@@ -425,19 +425,29 @@ function renderMovies() {
             }
         };
 
-img.src = movie.posterUrl || driveThumbnail;
+        img.src = movie.posterUrl || driveThumbnail;
 
-img.alt = movie.title || "Movie Poster";
-img.style.width = "100%";
-img.style.height = "100%";
-img.style.objectFit = "cover";
+        img.alt = `${movie.title || "Movie"} poster`;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
 
-img.onerror = function () {
-  this.onerror = null;
-  this.src = driveThumbnail;
-};
+        img.onerror = function () {
+            this.onerror = null;
 
-poster.appendChild(img);
+            if (this.src !== driveThumbnail) {
+                this.src = driveThumbnail;
+            } else {
+                this.remove();
+                icon.style.display = "block";
+            }
+        };
+
+        img.onload = function () {
+            icon.style.display = "none";
+        };
+
+        poster.appendChild(img);
 ```
 
         const label = document.createElement("div");
