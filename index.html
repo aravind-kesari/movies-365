@@ -385,7 +385,8 @@ function renderMovies() {
         const img = document.createElement("img");
         img.alt = cleanTitle(movie.name);
         img.loading = "lazy";
-        img.src = `https://drive.google.com/thumbnail?id=${encodeURIComponent(movie.id)}&sz=w500`;
+        img.src = movie.posterUrl ||
+    `https://drive.google.com/thumbnail?id=${encodeURIComponent(movie.id)}&sz=w500`;
 
         img.onload = () => {
             if (img.naturalWidth > 0) {
